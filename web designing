@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculator</title>
+
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background-image: url("rm373batch13-086.jpg");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        min-height: 100vh;
+        padding-top: 30px;
+        gap: 20px;
+    }
+
+    /* Panels */
+    .panel {
+        width: 180px;
+        padding: 20px;
+        border-radius: 15px;
+        background: rgba(255,255,255,0.12);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 0 15px rgba(0,0,0,0.4);
+        color: white;
+        font-size: 20px;
+    }
+
+    .panel h3 {
+        text-align: center;
+        margin-bottom: 10px;
+        font-size: 18px;
+        font-style: italic;
+    }
+
+    /* Calculator Box */
+    .box {
+        width: 300px;
+        padding: 25px;
+        border-radius: 25px;
+        background: rgba(255,255,255,0.12);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    /* Heading */
+    #h1 {
+        text-align: center;
+        background: rgba(255,255,255,0.15);
+        backdrop-filter: blur(6px);
+        border-radius: 15px;
+        padding: 10px;
+        width: 290px;
+        margin-bottom: 20px;
+        font-style: italic;
+        font-size: 18px;
+        color: white;
+    }
+
+    /* Screen */
+    #screen {
+        width: 220px;
+        height: 45px;
+        margin-bottom: 20px;
+        padding-left: 12px;
+        font-size: 20px;
+        color: white;
+        background: rgba(0,0,0,0.3);
+        border: none;
+        border-radius: 25px;
+        box-shadow: inset 0 0 8px rgba(0,0,0,0.6);
+    }
+
+    /* Rows */
+    .row {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 10px;
+    }
+
+    /* Buttons */
+    button {
+        width: 45px;
+        height: 45px;
+        margin: 6px;
+        font-size: 18px;
+        color: white;
+        background: rgba(255,255,255,0.15);
+        border: none;
+        border-radius: 8px;
+        backdrop-filter: blur(4px);
+        box-shadow: 0 0 8px rgba(0,0,0,0.4);
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    button:hover {
+        background: rgba(255,255,255,0.25);
+        box-shadow: 0 0 12px rgba(255,255,255,0.3);
+        transform: scale(1.05);
+    }
+
+    .container {
+        display: flex;
+        gap: 20px;
+        align-items: flex-start;
+    }
+
+    /* Time display */
+    #time {
+        text-align: center;
+        margin-top: 10px;
+        font-weight: bold;
+        font-size: 25px;
+    }
+
+    .font
+    {
+        font-size: 50px;
+    }
+
+</style>
+</head>
+<body>
+
+<div class="panel" id="info-panel">
+    <h3>Project Info</h3>
+    <p><strong>Project:</strong> Calculator</p>
+    <p><strong>Made with:</strong> HTML, CSS, JS</p>
+    <p><strong>Class:</strong> XI B</p>
+    <p><strong>Features:</strong></p>
+    <ul>
+        <li>Safe input evaluation</li>
+        <li>Prevents double operators</li>
+        <li>Backspace support</li>
+    </ul>
+</div>
+
+<div class="container">
+    <div class="box">
+        <div id="h1"><h1>CALCULATOR</h1></div>
+        <input type="text" id="screen" readonly>
+
+        <div class="row">
+            <button onclick="clearScreen()">C</button>
+            <button onclick="backspace()">⌫</button>
+        </div>
+
+        <div class="row">
+            <button onclick="press('7')">7</button>
+            <button onclick="press('8')">8</button>
+            <button onclick="press('9')">9</button>
+            <button onclick="press('+')">+</button>
+        </div>
+
+        <div class="row">
+            <button onclick="press('4')">4</button>
+            <button onclick="press('5')">5</button>
+            <button onclick="press('6')">6</button>
+            <button onclick="press('-')">−</button>
+        </div>
+
+        <div class="row">
+            <button onclick="press('1')">1</button>
+            <button onclick="press('2')">2</button>
+            <button onclick="press('3')">3</button>
+            <button onclick="press('*')">×</button>
+        </div>
+
+        <div class="row">
+            <button onclick="press('0')">0</button>
+            <button onclick="press('.')">.</button>
+            <button onclick="press('/')">÷</button>
+            <button onclick="calculate()">=</button>
+        </div>
+    </div>
+
+    <div class="panel" id="time-panel">
+        <h3> </h3>
+        <div class= font id="time"></div>
+    </div>
+</div>
+
+<script>
+    let screen = document.getElementById("screen");
+
+    function press(value) {
+        const lastChar = screen.value.slice(-1);
+        const operators = "+-*/";
+
+        if (screen.value === "" && operators.includes(value)) return; // Prevent starting with operator
+        if (operators.includes(value) && operators.includes(lastChar)) return; // Prevent double operators
+
+        screen.value += value;
+    }
+
+    function clearScreen() {
+        screen.value = "";
+    }
+
+    function backspace() {
+        screen.value = screen.value.slice(0, -1);
+    }
+
+    function calculate() {
+        try {
+            if ("+-*/".includes(screen.value.slice(-1))) {
+                screen.value = "Error";
+                return;
+            }
+            screen.value = Function("return " + screen.value)();
+        } catch {
+            screen.value = "Error";
+        }
+    }
+
+    // Live Date & Time
+    function updateTime() {
+        const now = new Date();
+        const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
+        const timeString = now.toLocaleTimeString();
+        const dateString = now.toLocaleDateString(undefined, options);
+        document.getElementById("time").innerHTML = `${dateString}<br>${timeString}`;
+    }
+    setInterval(updateTime, 1000);
+    updateTime();
+
+    // Keyboard support
+    document.addEventListener("keydown", (e) => {
+        if ("0123456789+-*/.".includes(e.key)) {
+            press(e.key);
+        } else if (e.key === "Enter") {
+            calculate();
+        } else if (e.key === "Backspace") {
+            backspace();
+        }
+    });
+</script>
+
+</body>
+</html>
