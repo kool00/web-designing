@@ -13,12 +13,14 @@
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
+
         display: flex;
         justify-content: center;
-        align-items: flex-start;
+        align-items: center;
+        flex-wrap: wrap;          /* ✅ FIX */
         min-height: 100vh;
-        padding-top: 30px;
         gap: 20px;
+        padding: 20px;
     }
 
     /* Panels */
@@ -30,7 +32,7 @@
         backdrop-filter: blur(10px);
         box-shadow: 0 0 15px rgba(0,0,0,0.4);
         color: white;
-        font-size: 20px;
+        font-size: 18px;
     }
 
     .panel h3 {
@@ -60,7 +62,7 @@
         backdrop-filter: blur(6px);
         border-radius: 15px;
         padding: 10px;
-        width: 290px;
+        width: 100%;
         margin-bottom: 20px;
         font-style: italic;
         font-size: 18px;
@@ -113,7 +115,9 @@
     .container {
         display: flex;
         gap: 20px;
-        align-items: flex-start;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;        /* ✅ FIX */
     }
 
     /* Time display */
@@ -121,28 +125,24 @@
         text-align: center;
         margin-top: 10px;
         font-weight: bold;
-        font-size: 25px;
-    }
-
-    .font
-    {
-        font-size: 50px;
+        font-size: 22px;
     }
 
 </style>
 </head>
 <body>
 
-<div class="panel" id="info-panel">
+<div class="panel">
     <h3>Project Info</h3>
     <p><strong>Project:</strong> Calculator</p>
     <p><strong>Made with:</strong> HTML, CSS, JS</p>
     <p><strong>Class:</strong> XI B</p>
     <p><strong>Features:</strong></p>
     <ul>
-        <li>Safe input evaluation</li>
+        <li>Safe input handling</li>
         <li>Prevents double operators</li>
-        <li>Backspace support</li>
+        <li>Keyboard support</li>
+        <li>Responsive design</li>
     </ul>
 </div>
 
@@ -185,21 +185,23 @@
         </div>
     </div>
 
-    <div class="panel" id="time-panel">
-        <h3> </h3>
-        <div class= font id="time"></div>
+    <div class="panel">
+        <h3>Date & Time</h3>
+        <div id="time"></div>
     </div>
 </div>
 
 <script>
-    let screen = document.getElementById("screen");
+    const screen = document.getElementById("screen");
 
     function press(value) {
+        if (screen.value === "Error") screen.value = "";
+
         const lastChar = screen.value.slice(-1);
         const operators = "+-*/";
 
-        if (screen.value === "" && operators.includes(value)) return; // Prevent starting with operator
-        if (operators.includes(value) && operators.includes(lastChar)) return; // Prevent double operators
+        if (screen.value === "" && operators.includes(value)) return;
+        if (operators.includes(value) && operators.includes(lastChar)) return;
 
         screen.value += value;
     }
@@ -214,36 +216,35 @@
 
     function calculate() {
         try {
+            if (!/^[0-9+\-*/. ]+$/.test(screen.value)) {
+                screen.value = "Error";
+                return;
+            }
             if ("+-*/".includes(screen.value.slice(-1))) {
                 screen.value = "Error";
                 return;
             }
-            screen.value = Function("return " + screen.value)();
+            screen.value = new Function("return " + screen.value)();
         } catch {
             screen.value = "Error";
         }
     }
 
-    // Live Date & Time
     function updateTime() {
         const now = new Date();
         const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
-        const timeString = now.toLocaleTimeString();
-        const dateString = now.toLocaleDateString(undefined, options);
-        document.getElementById("time").innerHTML = `${dateString}<br>${timeString}`;
+        document.getElementById("time").innerHTML =
+            now.toLocaleDateString(undefined, options) + "<br>" +
+            now.toLocaleTimeString();
     }
+
     setInterval(updateTime, 1000);
     updateTime();
 
-    // Keyboard support
     document.addEventListener("keydown", (e) => {
-        if ("0123456789+-*/.".includes(e.key)) {
-            press(e.key);
-        } else if (e.key === "Enter") {
-            calculate();
-        } else if (e.key === "Backspace") {
-            backspace();
-        }
+        if ("0123456789+-*/.".includes(e.key)) press(e.key);
+        else if (e.key === "Enter") calculate();
+        else if (e.key === "Backspace") backspace();
     });
 </script>
 
